@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { Form } from "./components/Form";
 import { PersonInfo } from "./components/PersonInfo";
 
 /* const currentDate = new Date();
@@ -24,22 +26,34 @@ const people = [
     tel: 111111111,
     city: "Warszawa",
   },
+  {
+    name: "Puchacz",
+    tel: 123456789,
+    city: "",
+  },
 ];
 
+const PersonInfoElements = people.map((person) => (
+  <PersonInfo
+    key={person.tel}
+    name={person.name}
+    tel={person.tel}
+    city={person.city}
+  />
+));
+
 function App() {
+  const [isFormShown, setIsFormShown] = useState(false);
+
   return (
     <>
-      <PersonInfo
-        name={people[0].name}
-        tel={people[0].tel}
-        city={people[0].city}
-      />
+      {isFormShown ? (
+        <Form />
+      ) : (
+        <button onClick={() => setIsFormShown(true)}>Dodaj</button>
+      )}
 
-      <PersonInfo
-        name={people[1].name}
-        tel={people[1].tel}
-        city={people[1].city}
-      />
+      {PersonInfoElements}
     </>
   );
 }
