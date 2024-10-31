@@ -44,11 +44,14 @@ const PersonInfoElements = people.map((person) => (
 
 function App() {
   const [isFormShown, setIsFormShown] = useState(false);
+  const AddPerson = (data) => {
+    console.log(data);
+  };
 
   return (
     <>
       {isFormShown ? (
-        <Form />
+        <Form onAddPerson={AddPerson} />
       ) : (
         <button onClick={() => setIsFormShown(true)}>Dodaj</button>
       )}
