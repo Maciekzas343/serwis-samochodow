@@ -33,6 +33,11 @@ const initialPeople = [
     tel: 123456789,
     city: "",
   },
+  {
+    name: "Jan",
+    tel: 534654621,
+    city: "Gdańsk",
+  },
 ];
 
 function App() {
