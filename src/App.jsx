@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Form } from "./components/Form";
 import { PersonInfo } from "./components/PersonInfo";
 
-import "./App.css";
-
 /* const currentDate = new Date();
 const hours = currentDate.getHours();
 const minutes = currentDate.getMinutes();
@@ -13,9 +11,9 @@ function getRandomNumber() {
 }
 
 const number = getRandomNumber();
-*/
 
-// Tel: <Tel tel={newPerson1.tel} />
+
+ Tel: <Tel tel={newPerson1.tel} />
 
 const initialPeople = [
   {
@@ -40,8 +38,8 @@ const initialPeople = [
   },
 ];
 
-function App() {
-  const [isFormShown, setIsFormShown] = useState(false);
+
+const [isFormShown, setIsFormShown] = useState(false);
   const [people, setPeople] = useState(initialPeople);
 
   const AddPerson = (data) => {
@@ -50,9 +48,10 @@ function App() {
     setIsFormShown(false);
   };
 
-  return (
-    <>
-      {isFormShown ? (
+
+  return
+
+  {isFormShown ? (
         <Form onAddPerson={AddPerson} />
       ) : (
         <button onClick={() => setIsFormShown(true)}>Dodaj</button>
@@ -65,8 +64,12 @@ function App() {
           city={person.city}
         />
       ))}
-    </>
-  );
+
+
+*/
+
+function App() {
+  return 0;
 }
 
 export default App;

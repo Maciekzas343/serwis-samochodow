@@ -11,103 +11,50 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div id="root">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="index.html"
-          >Śledzenie Serwisowania Auta</a
-        >
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav">
-            <li class="nav-item active">
-              <a class="nav-link" href="index.html">Strona Główna</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="status.html">Status Auta</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="oferta.html">Oferta</a>
-            </li>
-          </ul>
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-              <a class="nav-link btn btn-primary text-white" href="login.html"
-                >Log in</a
-              >
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <div class="container mt-4">
-        <h2>Zrealizowane Serwisy</h2>
-        <ul class="list-group">
-          <li class="list-group-item">
-            <span class="data-serwisu">2024-05-10</span>
-            <span class="opis-serwisu">Wymiana oleju</span>
-            <span class="koszt-serwisu">50 zł</span>
+    <script type="module" src="/src/main.jsx"></script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="index.html">Śledzenie Serwisowania Auta</a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Strona Główna</a>
           </li>
-          <li class="list-group-item">
-            <span class="data-serwisu">2024-03-15</span>
-            <span class="opis-serwisu">Wymiana klocków hamulcowych</span>
-            <span class="koszt-serwisu">120 zł</span>
+          <li class="nav-item">
+            <a class="nav-link" href="status.html">Status Auta</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="oferta.html">Oferta</a>
           </li>
         </ul>
-
-        <h2 class="mt-4">Nadchodzące Serwisy</h2>
-        <ul class="list-group">
-          <li class="list-group-item">
-            <span class="data-serwisu">2024-11-20</span>
-            <span class="opis-serwisu">Rotacja opon</span>
-            <span class="szacowany-koszt">40 zł</span>
-          </li>
-          <li class="list-group-item">
-            <span class="data-serwisu">2025-01-10</span>
-            <span class="opis-serwisu">Kontrola akumulatora</span>
-            <span class="szacowany-koszt">30 zł</span>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link btn btn-primary text-white" href="login.html"
+              >Log in</a
+            >
           </li>
         </ul>
-
-        <div class="powiadomienia mt-4">
-          <h2>Powiadomienia</h2>
-          <p>Włącz powiadomienia SMS o nadchodzących przeglądach:</p>
-          <form id="formularz-powiadomien">
-            <div class="form-group">
-              <label for="telefon">Numer telefonu:</label>
-              <input
-                type="tel"
-                class="form-control"
-                id="telefon"
-                name="telefon"
-                placeholder="Wpisz numer telefonu"
-                required
-              />
-            </div>
-            <button type="submit" class="btn btn-primary">
-              Włącz powiadomienia SMS
-            </button>
-          </form>
-        </div>
       </div>
+    </nav>
 
-      <footer class="bg-dark text-white text-center py-3">
-        <p>&copy; 2024 Śledzenie Serwisowania Auta</p>
-      </footer>
+    <div id="root"></div>
+    <footer class="bg-dark text-white text-center py-3">
+      <p>&copy; 2024 Śledzenie Serwisowania Auta</p>
+    </footer>
 
-      <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-      <script src="https ://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-      <script src="background.js"></script>
-    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https ://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="background.js"></script>
   </body>
 </html>
