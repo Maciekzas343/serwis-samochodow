@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Form } from "./components/Form";
 import { PersonInfo } from "./components/PersonInfo";
 
+import "./App.css";
+
 /* const currentDate = new Date();
 const hours = currentDate.getHours();
 const minutes = currentDate.getMinutes();
@@ -15,7 +17,7 @@ const number = getRandomNumber();
 
 // Tel: <Tel tel={newPerson1.tel} />
 
-const people = [
+const initialPeople = [
   {
     name: "Maciek",
     tel: 213769420,
@@ -33,19 +35,14 @@ const people = [
   },
 ];
 
-const PersonInfoElements = people.map((person) => (
-  <PersonInfo
-    key={person.tel}
-    name={person.name}
-    tel={person.tel}
-    city={person.city}
-  />
-));
-
 function App() {
   const [isFormShown, setIsFormShown] = useState(false);
+  const [people, setPeople] = useState(initialPeople);
+
   const AddPerson = (data) => {
-    console.log(data);
+    const newPeople = [...people, data];
+    setPeople(newPeople);
+    setIsFormShown(false);
   };
 
   return (
@@ -55,8 +52,14 @@ function App() {
       ) : (
         <button onClick={() => setIsFormShown(true)}>Dodaj</button>
       )}
-
-      {PersonInfoElements}
+      {people.map((person) => (
+        <PersonInfo
+          key={person.tel}
+          name={person.name}
+          tel={person.tel}
+          city={person.city}
+        />
+      ))}
     </>
   );
 }

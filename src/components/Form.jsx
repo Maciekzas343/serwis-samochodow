@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export const Form = (onAddPerson) => {
+export const Form = ({ onAddPerson }) => {
   const [name, setName] = useState("");
   const [tel, setTel] = useState("");
   const [city, setCity] = useState("");

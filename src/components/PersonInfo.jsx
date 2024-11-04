@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Tel } from "./Tel";
+import "./PersonInfo.css";
 
 export const PersonInfo = (props) => {
   let stateArray = useState(false);
