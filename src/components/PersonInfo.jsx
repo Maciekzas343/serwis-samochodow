@@ -19,18 +19,19 @@ export const PersonInfo = (props) => {
 
   return (
     <>
-      <h2>{props.name}</h2>
+      <li className={isExpanded ? "active" : ""}>
+        <h2>{props.name}</h2>
 
-      {!isExpanded && buttonE1}
-      {isExpanded && (
-        <>
-          <h3>
-            Telefon: <Tel tel={props.tel} />
-          </h3>
-          {props.city !== undefined ? <h3>Miasto: {props.city}</h3> : null}
-        </>
-      )}
-      <hr />
+        {!isExpanded && buttonE1}
+        {isExpanded && (
+          <>
+            <h3>
+              Telefon: <Tel tel={props.tel} />
+            </h3>
+            {props.city !== undefined ? <h3>Miasto: {props.city}</h3> : null}
+          </>
+        )}
+      </li>
     </>
   );
 };
