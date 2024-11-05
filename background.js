@@ -1,8 +1,8 @@
 let currentBackground = 0; // Indeks aktualnego tła
 const backgrounds = [
-  'url("/background.jpg")',
-  'url("/background1.jpg")',
-  'url("/background2.jpg")',
+  'url("background.jpg")',
+  'url("background1.jpg")',
+  'url("background2.jpg")',
 ];
 
 function changeBackground() {
