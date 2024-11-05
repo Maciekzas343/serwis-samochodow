@@ -2,44 +2,6 @@ import { useState } from "react";
 //import { Form } from "./components/Form";
 //import { PersonInfo } from "./components/PersonInfo";
 
-const login_content = (
-  <>
-    <div className="container mt-5">
-      <h2 className="text-center">Logowanie</h2>
-      <form id="login-form" method="POST" action="process_login.php">
-        <div className="form-group">
-          <label htmlFor="username">Nazwa użytkownika</label>
-          <input
-            type="text"
-            className="form-control"
-            id="username"
-            name="username"
-            placeholder="Wpisz nazwę użytkownika"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Hasło</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            name="password"
-            placeholder="Wpisz hasło"
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary btn-block">
-          Zaloguj się
-        </button>
-      </form>
-      <p className="mt-3 text-center">
-        Nie masz konta? <a href="register.html">Zarejestruj się</a>
-      </p>
-    </div>
-  </>
-);
-
 const glowny_content = (
   <>
     <div className="container mt-4">
@@ -122,66 +84,6 @@ const auto_content = (
           2024-03-15: Wymiana klocków hamulcowych
         </li>
       </ul>
-    </div>
-  </>
-);
-
-const register_content = (
-  <>
-    <div className="container mt-5">
-      <h2 className="text-center">Rejestracja</h2>
-      <form id="register-form" method="POST" action="process_register.php">
-        <div className="form-group">
-          <label htmlFor="username">Nazwa użytkownika</label>
-          <input
-            type="text"
-            className="form-control"
-            id="username"
-            name="username"
-            placeholder="Wpisz nazwę użytkownika"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Adres e-mail</label>
-          <input
-            type="email"
-            className="form-control"
-            id="email"
-            name="email"
-            placeholder="Wpisz adres e-mail"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Hasło</label>
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            name="password"
-            placeholder="Wpisz hasło"
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="confirm-password">Potwierdź hasło</label>
-          <input
-            type="password"
-            className="form-control"
-            id="confirm-password"
-            name="confirm-password"
-            placeholder="Potwierdź hasło"
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary btn-block">
-          Zarejestruj się
-        </button>
-      </form>
-      <p className="mt-3 text-center">
-        Masz już konto ? <a href="login.html">Zaloguj się</a>
-      </p>
     </div>
   </>
 );
@@ -275,6 +177,110 @@ function App() {
         return glowny_content;
     }
   };
+
+  const login_content = (
+    <>
+      <div className="container mt-5">
+        <h2 className="text-center">Logowanie</h2>
+        <form id="login-form" method="POST" action="process_login.php">
+          <div className="form-group">
+            <label htmlFor="username">Nazwa użytkownika</label>
+            <input
+              type="text"
+              className="form-control"
+              id="username"
+              name="username"
+              placeholder="Wpisz nazwę użytkownika"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Hasło</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
+              placeholder="Wpisz hasło"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-block">
+            Zaloguj się
+          </button>
+        </form>
+        <p className="mt-3 text-center">
+          Nie masz konta?{" "}
+          <a href="#" onClick={() => setContent("register")}>
+            Zarejestruj się
+          </a>
+        </p>
+      </div>
+    </>
+  );
+
+  const register_content = (
+    <>
+      <div className="container mt-5">
+        <h2 className="text-center">Rejestracja</h2>
+        <form id="register-form" method="POST" action="process_register.php">
+          <div className="form-group">
+            <label htmlFor="username">Nazwa użytkownika</label>
+            <input
+              type="text"
+              className="form-control"
+              id="username"
+              name="username"
+              placeholder="Wpisz nazwę użytkownika"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Adres e-mail</label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              name="email"
+              placeholder="Wpisz adres e-mail"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Hasło</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
+              placeholder="Wpisz hasło"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="confirm-password">Potwierdź hasło</label>
+            <input
+              type="password"
+              className="form-control"
+              id="confirm-password"
+              name="confirm-password"
+              placeholder="Potwierdź hasło"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-block">
+            Zarejestruj się
+          </button>
+        </form>
+        <p className="mt-3 text-center">
+          Masz już konto ?{" "}
+          <a href="#" onClick={() => setContent("login")}>
+            Zaloguj się
+          </a>
+        </p>
+      </div>
+    </>
+  );
 
   const nav_bar = (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">

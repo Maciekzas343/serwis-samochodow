@@ -11,7 +11,7 @@
 body {
   background-color: #dbd9db;
   font-family: Arial, sans-serif;
-  background-image: url("public/background.jpg");
+  background-image: url("/background.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   transition: background-image 1s ease-in-out; /* Płynne przejście */
@@ -79,4 +79,8 @@ footer {
   bottom: 0;
   width: 100%;
   margin-top: auto;
+}
+
+.hoverclass:hover {
+  color: #333;
 }
