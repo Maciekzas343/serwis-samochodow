@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 function App() {
   const [content, setContent] = useState("glowny");
   const [posts, setPosts] = useState([]);
+  const [loggedInUser, setLoggedInUser] = useState(null); // Stan dla zalogowanego użytkownika
+  const [users, setUsers] = useState([]); // Przechowywanie danych użytkowników
 
   // Pobieranie postów z API (JSON Server)
   useEffect(() => {
@@ -12,16 +14,95 @@ function App() {
       .catch((error) => console.error("Błąd pobierania danych:", error));
   }, []);
 
+  // Pobieranie użytkowników z API
+  useEffect(() => {
+    fetch("http://localhost:5000/users")
+      .then((response) => response.json())
+      .then((data) => setUsers(data))
+      .catch((error) => console.error("Błąd pobierania użytkowników:", error));
+  }, []);
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    const username = event.target.username.value;
+    const password = event.target.password.value;
+
+    const user = users.find(
+      (user) => user.username === username && user.password === password
+    );
+
+    if (user) {
+      setLoggedInUser(user);
+      alert("Zalogowano!");
+      setContent("glowny");
+    } else {
+      alert("Nieprawidłowe dane logowania!");
+    }
+  };
+
+  const handleRegister = (event) => {
+    event.preventDefault();
+    const username = event.target.username.value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+
+    const userExists = users.some((user) => user.username === username);
+
+    if (userExists) {
+      alert("Użytkownik o tej nazwie już istnieje!");
+      return;
+    }
+
+    const newUser = { username, email, password };
+
+    // Wysyłanie nowego użytkownika do JSON Server
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUser),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setUsers((prevUsers) => [...prevUsers, newUser]);
+          alert("Rejestracja zakończona sukcesem!");
+          setContent("login");
+        }
+      })
+      .catch((error) => console.error("Błąd rejestracji:", error));
+  };
+
+  const admin_content = (
+    <>
+      <div className="container mt-4">
+        <h2>Panel Administratora</h2>
+        <p>Zarządzaj użytkownikami platformy:</p>
+        <ul className="list-group">
+          {users.map((user) => (
+            <li
+              key={user.id}
+              className="list-group-item d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <strong>{user.username}</strong> - {user.email}
+              </div>
+              <button className="btn btn-primary btn-sm">Dodaj</button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+
   const glowny_content = (
     <>
       <div className="container mt-4">
-        <div>
-          <h1>Profesjonalne Serwisowanie Auta</h1>
-          <p>Zapewniamy kompleksową obsługę Twojego pojazdu w Radomiu.</p>
-          <a href="#services" className="btn btn-primary">
-            Zobacz nasze usługi
-          </a>
-        </div>
+        <h1>Profesjonalne Serwisowanie Auta</h1>
+        <p>Zapewniamy kompleksową obsługę Twojego pojazdu w Radomiu.</p>
+        <a href="#services" className="btn btn-primary">
+          Zobacz nasze usługi
+        </a>
 
         <div className="container mt-5">
           <h2 className="text-center">Nasze Usługi</h2>
@@ -59,36 +140,6 @@ function App() {
               </div>
             </div>
           </div>
-
-          <div className="promotion mt-4">
-            <h3 className="text-center">Aktualne Promocje</h3>
-            <ul>
-              <li>10% zniżki na pierwszy przegląd!</li>
-              <li>Bezpłatna diagnostyka komputerowa przy każdej naprawie!</li>
-              <li>Wymiana oleju z rabatem 15% w miesiącu marcu!</li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="powiadomienia mt-4">
-          <h2>Powiadomienia</h2>
-          <p>Włącz powiadomienia SMS o nadchodzących przeglądach:</p>
-          <form id="formularz-powiadomien">
-            <div className="form-group">
-              <label htmlFor="telefon">Numer telefonu:</label>
-              <input
-                type="tel"
-                className="form-control"
-                id="telefon"
-                name="telefon"
-                placeholder="Wpisz numer telefonu"
-                required
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Włącz powiadomienia SMS
-            </button>
-          </form>
         </div>
       </div>
     </>
@@ -141,6 +192,99 @@ function App() {
     </>
   );
 
+  const login_content = (
+    <>
+      <div className="container mt-5">
+        <h2 className="text-center">Logowanie</h2>
+        <form onSubmit={handleLogin}>
+          <div className="form-group">
+            <label htmlFor="username">Nazwa użytkownika</label>
+            <input
+              type="text"
+              className="form-control"
+              id="username"
+              name="username"
+              placeholder="Wpisz nazwę użytkownika"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Hasło</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
+              placeholder="Wpisz hasło"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-block">
+            Zaloguj się
+          </button>
+        </form>
+        <p className="mt-3 text-center">
+          Nie masz konta?{" "}
+          <a href="#" onClick={() => setContent("register")}>
+            Zarejestruj się
+          </a>
+        </p>
+      </div>
+    </>
+  );
+
+  const register_content = (
+    <>
+      <div className="container mt-5">
+        <h2 className="text-center">Rejestracja</h2>
+        <form onSubmit={handleRegister}>
+          <div className="form-group">
+            <label htmlFor="username">Nazwa użytkownika</label>
+            <input
+              type="text"
+              className="form-control"
+              id="username"
+              name="username"
+              placeholder="Wpisz nazwę użytkownika"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="email">Adres e-mail</label>
+            <input
+              type="email"
+              className="form-control"
+              id="email"
+              name="email"
+              placeholder="Wpisz adres e-mail"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Hasło</label>
+            <input
+              type="password"
+              className="form-control"
+              id="password"
+              name="password"
+              placeholder="Wpisz hasło"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-primary btn-block">
+            Zarejestruj się
+          </button>
+        </form>
+        <p className="mt-3 text-center">
+          Masz już konto?{" "}
+          <a href="#" onClick={() => setContent("login")}>
+            Zaloguj się
+          </a>
+        </p>
+      </div>
+    </>
+  );
+
   const renderContent = () => {
     switch (content) {
       case "glowny":
@@ -149,6 +293,12 @@ function App() {
         return auto_content;
       case "oferta":
         return oferta_content;
+      case "login":
+        return login_content;
+      case "register":
+        return register_content;
+      case "admin":
+        return admin_content;
       default:
         return glowny_content;
     }
@@ -194,6 +344,33 @@ function App() {
             >
               Oferta
             </a>
+          </li>
+          {loggedInUser &&
+            loggedInUser.username === "admin" && ( // Sprawdzamy, czy zalogowany użytkownik to admin
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="#"
+                  onClick={() => setContent("admin")}
+                >
+                  Panel Admina
+                </a>
+              </li>
+            )}
+        </ul>
+        <ul className="navbar-nav ml-auto">
+          <li className="nav-item">
+            {loggedInUser ? (
+              <span className="nav-link">Witaj, {loggedInUser.username}</span>
+            ) : (
+              <a
+                className="nav-link btn btn-primary text-white"
+                href="#"
+                onClick={() => setContent("login")}
+              >
+                Logowanie
+              </a>
+            )}
           </li>
         </ul>
       </div>

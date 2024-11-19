@@ -3,16 +3,23 @@
     {
       "id": 1,
       "title": "Wymiana oleju",
-      "body": "Wymiana oleju w samochodzie osobowym",
+      "body": "Opis usługi...",
       "author": "Jan Kowalski",
-      "date": "2024-05-10"
+      "date": "2024-03-15"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@example.com",
+      "password": "12345"
     },
     {
-      "id": 2,
-      "title": "Wymiana klocków hamulcowych",
-      "body": "Klocki hamulcowe zostały wymienione na nowe",
-      "author": "Anna Nowak",
-      "date": "2024-03-15"
+      "id": "7f81",
+      "username": "darwin",
+      "email": "xyz@xyz.com",
+      "password": "123"
     }
   ]
 }
