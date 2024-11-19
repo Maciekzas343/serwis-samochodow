@@ -5,6 +5,8 @@ function App() {
   const [posts, setPosts] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(null); // Stan dla zalogowanego użytkownika
   const [users, setUsers] = useState([]); // Przechowywanie danych użytkowników
+  const [userRepairs, setUserRepairs] = useState({});
+  const [tempRepairs, setTempRepairs] = useState({});
 
   // Pobieranie postów z API (JSON Server)
   useEffect(() => {
@@ -21,6 +23,55 @@ function App() {
       .then((data) => setUsers(data))
       .catch((error) => console.error("Błąd pobierania użytkowników:", error));
   }, []);
+
+  // Funkcja do dodawania statusu naprawy
+  const handleAddRepair = (userId, repairData) => {
+    setUserRepairs((prevState) => ({
+      ...prevState,
+      [userId]: [...(prevState[userId] || []), repairData],
+    }));
+
+    // Resetujemy tymczasowe zmiany
+    setTempRepairs((prevState) => ({
+      ...prevState,
+      [userId]: [...(prevState[userId] || []), repairData],
+    }));
+  };
+
+  const handleTempChange = (userId, repairIndex, updatedRepair) => {
+    setTempRepairs((prevState) => {
+      const userRepairs = [...(prevState[userId] || [])];
+      userRepairs[repairIndex] = updatedRepair;
+      return { ...prevState, [userId]: userRepairs };
+    });
+  };
+
+  const handleSaveRepair = (userId) => {
+    setUserRepairs((prevState) => ({
+      ...prevState,
+      [userId]: tempRepairs[userId],
+    }));
+
+    alert("Zmiany zostały zapisane.");
+  };
+
+  const deleteUser = (userId) => {
+    if (window.confirm("Czy na pewno chcesz usunąć tego użytkownika?")) {
+      fetch(`http://localhost:5000/users/${userId}`, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            alert("Użytkownik został usunięty.");
+            // Usuń użytkownika z listy w stanie
+            setUsers(users.filter((user) => user.id !== userId));
+          } else {
+            alert("Wystąpił błąd podczas usuwania użytkownika.");
+          }
+        })
+        .catch((error) => console.error("Błąd podczas usuwania:", error));
+    }
+  };
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -73,6 +124,26 @@ function App() {
       .catch((error) => console.error("Błąd rejestracji:", error));
   };
 
+  const handleAddRepairForm = (userId) => {
+    const title = prompt("Wprowadź tytuł naprawy:");
+    const licensePlate = prompt("Wprowadź numer rejestracyjny:");
+    const phone = prompt("Wprowadź numer telefonu:");
+
+    if (title && licensePlate && phone) {
+      const newRepair = {
+        title,
+        licensePlate,
+        phone,
+        completed: false,
+        sendSms: false,
+      };
+
+      handleAddRepair(userId, newRepair);
+    } else {
+      alert("Wszystkie pola są wymagane!");
+    }
+  };
+
   const admin_content = (
     <>
       <div className="container mt-4">
@@ -80,14 +151,73 @@ function App() {
         <p>Zarządzaj użytkownikami platformy:</p>
         <ul className="list-group">
           {users.map((user) => (
-            <li
-              key={user.id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <div>
-                <strong>{user.username}</strong> - {user.email}
+            <li key={user.id} className="list-group-item">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{user.username}</strong> - {user.email}
+                </div>
+                <div>
+                  <button
+                    className="btn btn-primary btn-sm mr-2"
+                    onClick={() => handleAddRepairForm(user.id)}
+                  >
+                    Dodaj
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => deleteUser(user.id)}
+                  >
+                    Usuń
+                  </button>
+                </div>
               </div>
-              <button className="btn btn-primary btn-sm">Dodaj</button>
+              {tempRepairs[user.id]?.map((repair, index) => (
+                <div key={index} className="mt-3">
+                  <div>
+                    <strong>Naprawa:</strong> {repair.title}
+                  </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id={`completed-${user.id}-${index}`}
+                      checked={repair.completed}
+                      onChange={(e) =>
+                        handleTempChange(user.id, index, {
+                          ...repair,
+                          completed: e.target.checked,
+                        })
+                      }
+                    />
+                    <label htmlFor={`completed-${user.id}-${index}`}>
+                      Zakończone
+                    </label>
+                  </div>
+                  <div>
+                    <input
+                      type="checkbox"
+                      id={`sendSms-${user.id}-${index}`}
+                      checked={repair.sendSms}
+                      onChange={(e) =>
+                        handleTempChange(user.id, index, {
+                          ...repair,
+                          sendSms: e.target.checked,
+                        })
+                      }
+                    />
+                    <label htmlFor={`sendSms-${user.id}-${index}`}>
+                      Wysłać SMS?
+                    </label>
+                  </div>
+                </div>
+              ))}
+              {tempRepairs[user.id]?.length > 0 && (
+                <button
+                  className="btn btn-success btn-sm mt-2"
+                  onClick={() => handleSaveRepair(user.id)}
+                >
+                  Zapisz
+                </button>
+              )}
             </li>
           ))}
         </ul>
