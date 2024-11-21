@@ -2,19 +2,10 @@ import { useState, useEffect } from "react";
 
 function App() {
   const [content, setContent] = useState("glowny");
-  const [posts, setPosts] = useState([]);
   const [loggedInUser, setLoggedInUser] = useState(null); // Stan dla zalogowanego użytkownika
   const [users, setUsers] = useState([]); // Przechowywanie danych użytkowników
-  const [userRepairs, setUserRepairs] = useState({});
-  const [tempRepairs, setTempRepairs] = useState({});
-
-  // Pobieranie postów z API (JSON Server)
-  useEffect(() => {
-    fetch("http://localhost:5000/posts")
-      .then((response) => response.json())
-      .then((data) => setPosts(data))
-      .catch((error) => console.error("Błąd pobierania danych:", error));
-  }, []);
+  const [vehicles, setVehicles] = useState([]); // Lista pojazdów użytkownika
+  const [repairs, setRepairs] = useState([]); // Przechowywanie historii napraw
 
   // Pobieranie użytkowników z API
   useEffect(() => {
@@ -24,54 +15,23 @@ function App() {
       .catch((error) => console.error("Błąd pobierania użytkowników:", error));
   }, []);
 
-  // Funkcja do dodawania statusu naprawy
-  const handleAddRepair = (userId, repairData) => {
-    setUserRepairs((prevState) => ({
-      ...prevState,
-      [userId]: [...(prevState[userId] || []), repairData],
-    }));
-
-    // Resetujemy tymczasowe zmiany
-    setTempRepairs((prevState) => ({
-      ...prevState,
-      [userId]: [...(prevState[userId] || []), repairData],
-    }));
-  };
-
-  const handleTempChange = (userId, repairIndex, updatedRepair) => {
-    setTempRepairs((prevState) => {
-      const userRepairs = [...(prevState[userId] || [])];
-      userRepairs[repairIndex] = updatedRepair;
-      return { ...prevState, [userId]: userRepairs };
-    });
-  };
-
-  const handleSaveRepair = (userId) => {
-    setUserRepairs((prevState) => ({
-      ...prevState,
-      [userId]: tempRepairs[userId],
-    }));
-
-    alert("Zmiany zostały zapisane.");
-  };
-
-  const deleteUser = (userId) => {
-    if (window.confirm("Czy na pewno chcesz usunąć tego użytkownika?")) {
-      fetch(`http://localhost:5000/users/${userId}`, {
-        method: "DELETE",
-      })
-        .then((response) => {
-          if (response.ok) {
-            alert("Użytkownik został usunięty.");
-            // Usuń użytkownika z listy w stanie
-            setUsers(users.filter((user) => user.id !== userId));
-          } else {
-            alert("Wystąpił błąd podczas usuwania użytkownika.");
-          }
-        })
-        .catch((error) => console.error("Błąd podczas usuwania:", error));
+  // Pobieranie pojazdów dla zalogowanego użytkownika
+  useEffect(() => {
+    if (loggedInUser) {
+      fetch(`http://localhost:5000/vehicles?userId=${loggedInUser.id}`)
+        .then((response) => response.json())
+        .then((data) => setVehicles(data))
+        .catch((error) => console.error("Błąd pobierania pojazdów:", error));
     }
-  };
+  }, [loggedInUser]);
+
+  // Pobieranie historii napraw
+  useEffect(() => {
+    fetch("http://localhost:5000/repairs")
+      .then((response) => response.json())
+      .then((data) => setRepairs(data))
+      .catch((error) => console.error("Błąd pobierania napraw:", error));
+  }, []);
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -85,10 +45,83 @@ function App() {
     if (user) {
       setLoggedInUser(user);
       alert("Zalogowano!");
-      setContent("glowny");
+      setContent("auto");
     } else {
       alert("Nieprawidłowe dane logowania!");
     }
+  };
+
+  // Poprawka w handleAddRepair
+  const handleAddRepair = (event, vehicleId) => {
+    event.preventDefault();
+    const title = event.target.title.value;
+    const date = event.target.date.value;
+    const description = event.target.description.value;
+
+    const newRepair = {
+      vehicleId, // Poprawne przypisanie vehicleId
+      title,
+      date,
+      description,
+    };
+
+    fetch("http://localhost:5000/repairs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newRepair),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Błąd dodawania naprawy");
+        }
+      })
+      .then((savedRepair) => {
+        setRepairs((prevRepairs) => [...prevRepairs, savedRepair]);
+        alert("Naprawa została dodana!");
+      })
+      .catch((error) => console.error("Błąd dodawania naprawy:", error));
+  };
+
+  const handleAddVehicle = (event) => {
+    event.preventDefault();
+    const type = event.target.type.value;
+    const registrationNumber = event.target.registrationNumber.value;
+    const vin = event.target.vin.value;
+    const lastInspectionDate = event.target.lastInspectionDate.value;
+    const inspectionExpiryDate = event.target.inspectionExpiryDate.value;
+
+    const newVehicle = {
+      userId: loggedInUser.id,
+      type,
+      registrationNumber,
+      vin,
+      lastInspectionDate,
+      inspectionExpiryDate,
+    };
+
+    fetch("http://localhost:5000/vehicles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newVehicle),
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json(); // Pobierz odpowiedź z serwera
+        } else {
+          throw new Error("Błąd dodawania pojazdu");
+        }
+      })
+      .then((savedVehicle) => {
+        setVehicles((prevVehicles) => [...prevVehicles, savedVehicle]); // Dodajemy pojazd z ID
+        alert("Pojazd został dodany!");
+      })
+      .catch((error) => console.error("Błąd dodawania pojazdu:", error));
   };
 
   const handleRegister = (event) => {
@@ -124,113 +157,16 @@ function App() {
       .catch((error) => console.error("Błąd rejestracji:", error));
   };
 
-  const handleAddRepairForm = (userId) => {
-    const title = prompt("Wprowadź tytuł naprawy:");
-    const licensePlate = prompt("Wprowadź numer rejestracyjny:");
-    const phone = prompt("Wprowadź numer telefonu:");
-
-    if (title && licensePlate && phone) {
-      const newRepair = {
-        title,
-        licensePlate,
-        phone,
-        completed: false,
-        sendSms: false,
-      };
-
-      handleAddRepair(userId, newRepair);
-    } else {
-      alert("Wszystkie pola są wymagane!");
-    }
-  };
-
-  const admin_content = (
-    <>
-      <div className="container mt-4">
-        <h2>Panel Administratora</h2>
-        <p>Zarządzaj użytkownikami platformy:</p>
-        <ul className="list-group">
-          {users.map((user) => (
-            <li key={user.id} className="list-group-item">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>{user.username}</strong> - {user.email}
-                </div>
-                <div>
-                  <button
-                    className="btn btn-primary btn-sm mr-2"
-                    onClick={() => handleAddRepairForm(user.id)}
-                  >
-                    Dodaj
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => deleteUser(user.id)}
-                  >
-                    Usuń
-                  </button>
-                </div>
-              </div>
-              {tempRepairs[user.id]?.map((repair, index) => (
-                <div key={index} className="mt-3">
-                  <div>
-                    <strong>Naprawa:</strong> {repair.title}
-                  </div>
-                  <div>
-                    <input
-                      type="checkbox"
-                      id={`completed-${user.id}-${index}`}
-                      checked={repair.completed}
-                      onChange={(e) =>
-                        handleTempChange(user.id, index, {
-                          ...repair,
-                          completed: e.target.checked,
-                        })
-                      }
-                    />
-                    <label htmlFor={`completed-${user.id}-${index}`}>
-                      Zakończone
-                    </label>
-                  </div>
-                  <div>
-                    <input
-                      type="checkbox"
-                      id={`sendSms-${user.id}-${index}`}
-                      checked={repair.sendSms}
-                      onChange={(e) =>
-                        handleTempChange(user.id, index, {
-                          ...repair,
-                          sendSms: e.target.checked,
-                        })
-                      }
-                    />
-                    <label htmlFor={`sendSms-${user.id}-${index}`}>
-                      Wysłać SMS?
-                    </label>
-                  </div>
-                </div>
-              ))}
-              {tempRepairs[user.id]?.length > 0 && (
-                <button
-                  className="btn btn-success btn-sm mt-2"
-                  onClick={() => handleSaveRepair(user.id)}
-                >
-                  Zapisz
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
-  );
-
   const glowny_content = (
     <>
       <div className="container mt-4">
         <h1>Profesjonalne Serwisowanie Auta</h1>
         <p>Zapewniamy kompleksową obsługę Twojego pojazdu w Radomiu.</p>
-        <a href="#services" className="btn btn-primary">
+        <a
+          href="#"
+          onClick={() => setContent("oferta")}
+          className="btn btn-primary"
+        >
           Zobacz nasze usługi
         </a>
 
@@ -275,20 +211,163 @@ function App() {
     </>
   );
 
+  const add_vehicle_content = (
+    <>
+      <div className="container mt-4">
+        <h2>Dodaj Pojazd</h2>
+        <form onSubmit={handleAddVehicle}>
+          <div className="form-group">
+            <label htmlFor="type">Typ pojazdu</label>
+            <select id="type" name="type" className="form-control" required>
+              <option value="Samochód osobowy">Samochód osobowy</option>
+              <option value="Pojazd ciężarowy">Pojazd ciężarowy</option>
+              <option value="Czterokołowiec (Quad)">
+                Czterokołowiec (Quad)
+              </option>
+            </select>
+          </div>
+          <div className="form-group">
+            <label htmlFor="registrationNumber">Numer rejestracyjny</label>
+            <input
+              type="text"
+              id="registrationNumber"
+              name="registrationNumber"
+              className="form-control"
+              pattern=".{7,8}"
+              title="Numer rejestracyjny musi mieć 7-8 znaków."
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="vin">Numer VIN</label>
+            <input
+              type="text"
+              id="vin"
+              name="vin"
+              className="form-control"
+              pattern=".{17}"
+              title="Numer VIN musi mieć dokładnie 17 znaków."
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="lastInspectionDate">
+              Data ostatniego przeglądu
+            </label>
+            <input
+              type="date"
+              id="lastInspectionDate"
+              name="lastInspectionDate"
+              className="form-control"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="inspectionExpiryDate">
+              Data ważności przeglądu
+            </label>
+            <input
+              type="date"
+              id="inspectionExpiryDate"
+              name="inspectionExpiryDate"
+              className="form-control"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-success mt-3">
+            Zapisz
+          </button>
+        </form>
+        <button
+          className="btn btn-secondary mt-3"
+          onClick={() => setContent("auto")}
+        >
+          Powrót
+        </button>
+      </div>
+    </>
+  );
+
   const auto_content = (
     <>
       <div className="container mt-4">
         <h2>Status Twojego Auta</h2>
-        <ul className="list-group">
-          {posts.map((post) => (
-            <li key={post.id} className="list-group-item">
-              <span className="data-serwisu">{post.date}</span>
-              <h4>{post.title}</h4>
-              <p>{post.body}</p>
-              <small>Autor: {post.author}</small>
-            </li>
-          ))}
-        </ul>
+        {vehicles.filter((vehicle) => vehicle.userId === loggedInUser.id)
+          .length === 0 ? (
+          <p>
+            Brak pojazdów. Kliknij przycisk poniżej, aby dodać pierwszy pojazd.
+          </p>
+        ) : (
+          <ul className="list-group">
+            {vehicles
+              .filter((vehicle) => vehicle.userId === loggedInUser.id)
+              .map((vehicle, index) => (
+                <li key={index} className="list-group-item">
+                  <strong>Typ:</strong> {vehicle.type} <br />
+                  <strong>Rejestracja:</strong> {vehicle.registrationNumber}{" "}
+                  <br />
+                  <strong>VIN:</strong> {vehicle.vin} <br />
+                  <strong>Data ostatniego przeglądu:</strong>{" "}
+                  {vehicle.lastInspectionDate} <br />
+                  <strong>Data ważności przeglądu:</strong>{" "}
+                  {vehicle.inspectionExpiryDate}
+                  <h5 className="mt-3">Historia Napraw:</h5>
+                  <ul>
+                    {repairs
+                      .filter((repair) => repair.vehicleId === vehicle.id) // Filtrujemy według poprawnego ID pojazdu
+                      .map((repair, idx) => (
+                        <li key={idx}>
+                          <strong>{repair.date}</strong>: {repair.title} -{" "}
+                          {repair.description}
+                        </li>
+                      ))}
+                  </ul>
+                  <form
+                    className="mt-3"
+                    onSubmit={(e) => handleAddRepair(e, vehicle.id)}
+                  >
+                    <h6>Dodaj Naprawę</h6>
+                    <div className="form-group">
+                      <label htmlFor="title">Tytuł</label>
+                      <input
+                        type="text"
+                        name="title"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="date">Data</label>
+                      <input
+                        type="date"
+                        name="date"
+                        className="form-control"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label htmlFor="description">Opis</label>
+                      <textarea
+                        name="description"
+                        className="form-control"
+                        rows="3"
+                        required
+                      ></textarea>
+                    </div>
+                    <button type="submit" className="btn btn-success mt-2">
+                      Dodaj Naprawę
+                    </button>
+                  </form>
+                </li>
+              ))}
+          </ul>
+        )}
+        <button
+          className="btn btn-primary mt-4"
+          onClick={() => setContent("add_vehicle")}
+        >
+          Dodaj pojazd
+        </button>
       </div>
     </>
   );
@@ -425,10 +504,10 @@ function App() {
         return oferta_content;
       case "login":
         return login_content;
+      case "add_vehicle":
+        return add_vehicle_content;
       case "register":
         return register_content;
-      case "admin":
-        return admin_content;
       default:
         return glowny_content;
     }
@@ -475,18 +554,6 @@ function App() {
               Oferta
             </a>
           </li>
-          {loggedInUser &&
-            loggedInUser.username === "admin" && ( // Sprawdzamy, czy zalogowany użytkownik to admin
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  href="#"
-                  onClick={() => setContent("admin")}
-                >
-                  Panel Admina
-                </a>
-              </li>
-            )}
         </ul>
         <ul className="navbar-nav ml-auto">
           <li className="nav-item">

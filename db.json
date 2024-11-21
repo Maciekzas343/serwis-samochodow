@@ -1,19 +1,78 @@
 {
-  "posts": [
-    {
-      "id": 1,
-      "title": "Wymiana oleju",
-      "body": "Opis usługi...",
-      "author": "Jan Kowalski",
-      "date": "2024-03-15"
-    }
-  ],
   "users": [
     {
       "id": 1,
       "username": "admin",
       "email": "admin@example.com",
       "password": "12345"
+    },
+    {
+      "id": "8534",
+      "username": "kutas",
+      "email": "wbutach@hotmail",
+      "password": "12345"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": 1,
+      "type": "Samochód osobowy",
+      "registrationNumber": "ABC12345",
+      "vin": "1HGBH41JXMN109186",
+      "lastInspectionDate": "2024-01-15",
+      "inspectionExpiryDate": "2025-01-15",
+      "userId": 1
+    },
+    {
+      "id": "f1f6",
+      "userId": 1,
+      "type": "Pojazd ciężarowy",
+      "registrationNumber": "test123",
+      "vin": "12345678901234567",
+      "lastInspectionDate": "1212-12-12",
+      "inspectionExpiryDate": "1222-12-12"
+    },
+    {
+      "id": "d23d",
+      "type": "Czterokołowiec (Quad)",
+      "registrationNumber": "ZST2137",
+      "vin": "KNAE55LC3J6010494",
+      "lastInspectionDate": "1234-03-21",
+      "inspectionExpiryDate": "2134-04-21"
+    }
+  ],
+  "repairs": [
+    {
+      "id": "35b1",
+      "title": "Siur",
+      "date": "1212-12-12",
+      "description": "420"
+    },
+    {
+      "id": "ea4d",
+      "title": "klocki",
+      "date": "2019-10-12",
+      "description": "klocki"
+    },
+    {
+      "id": "c9dc",
+      "title": "test1",
+      "date": "2024-11-20",
+      "description": "test1"
+    },
+    {
+      "id": "e7b3",
+      "vehicleId": 1,
+      "title": "test2",
+      "date": "1212-12-12",
+      "description": "test2"
+    },
+    {
+      "id": "8d6e",
+      "vehicleId": "f1f6",
+      "title": "test3",
+      "date": "1223-12-12",
+      "description": "test3"
     }
   ]
 }
