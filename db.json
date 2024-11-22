@@ -5,6 +5,12 @@
       "username": "admin",
       "email": "admin@gmail.com",
       "password": "$2a$10$3/cyzn2N8voox8W24a2NLuayxpRDFaxh6SCCEgt2uW2QR3nD1Ec7u"
+    },
+    {
+      "id": "1b1e",
+      "username": "user1",
+      "email": "user1@gmail.com",
+      "password": "$2a$10$UtBx66lJb75QwAls8cUEA.C/SFFYcMQwMZcXkUdlMpMiYy5s6WQH6"
     }
   ],
   "vehicles": [

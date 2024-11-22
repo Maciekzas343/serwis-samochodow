@@ -579,7 +579,7 @@ function App() {
                   className="btn btn-outline-danger nav-link"
                   onClick={() => {
                     handleLogout();
-                    setContent("glowny");
+                    window.location.reload();
                   }}
                 >
                   Wyloguj
