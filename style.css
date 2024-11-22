@@ -15,11 +15,46 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   transition: background-image 1s ease-in-out; /* Płynne przejście */
+  position: relative; /* Umożliwia ustawienie pseudo-elementu */
+}
+
+/* Tworzenie pseudo-elementu, który będzie przyciemniał i rozmywa tło */
+body::before {
+  content: ""; /* Tworzymy pusty element */
+  position: absolute; /* Ustawiamy go na tło */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.3
+  ); /* Przyciemnienie (czarne tło z przezroczystością) */
+  filter: blur(5px); /* Rozmycie tła */
+  z-index: -1; /* Ustawiamy pseudo-element za treścią strony */
+}
+
+.card-body {
+  height: 200px;
+  width: auto;
+}
+
+footer p {
+  color: #feffea !important;
+}
+
+.text-center,
+h1,
+h3,
+h2 {
+  color: #feffea !important;
 }
 
 p,
 label {
-  color: #aeb0af !important;
+  color: black !important;
 }
 
 .nav-link {
@@ -50,23 +85,20 @@ h2 {
   margin-bottom: 10px;
 }
 
-/* Styl dla formularza powiadomień */
-.powiadomienia {
-  margin-top: 20px;
-}
-
 .form-group {
   margin-bottom: 15px;
 }
 
 /* Styl dla przycisku formularza */
 .btn {
-  background-color: #007bff;
+  background-color: #656256;
   color: #fff;
+  border-color: #656256;
 }
 
 .btn:hover {
-  background-color: #0056b3; /* Kolor tła przycisku po najechaniu */
+  background-color: #25283d; /* Kolor tła przycisku po najechaniu */
+  border-color: #25283d;
 }
 
 /* Styl dla stopki */

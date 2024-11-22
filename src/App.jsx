@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import bcrypt from "bcryptjs";
 
 function App() {
   const [content, setContent] = useState("glowny");
@@ -38,16 +39,19 @@ function App() {
     const username = event.target.username.value;
     const password = event.target.password.value;
 
-    const user = users.find(
-      (user) => user.username === username && user.password === password
-    );
+    const user = users.find((user) => user.username === username);
 
     if (user) {
-      setLoggedInUser(user);
-      alert("Zalogowano!");
-      setContent("auto");
+      // Sprawdzanie hasła za pomocą bcrypt
+      if (bcrypt.compareSync(password, user.password)) {
+        setLoggedInUser(user);
+        alert("Zalogowano!");
+        setContent("auto");
+      } else {
+        alert("Nieprawidłowe hasło!");
+      }
     } else {
-      alert("Nieprawidłowe dane logowania!");
+      alert("Nie znaleziono użytkownika o podanej nazwie!");
     }
   };
 
@@ -124,6 +128,11 @@ function App() {
       .catch((error) => console.error("Błąd dodawania pojazdu:", error));
   };
 
+  const handleLogout = () => {
+    setLoggedInUser(null); // Resetowanie zalogowanego użytkownika
+    setContent("glowny"); // Przeniesienie na stronę główną
+  };
+
   const handleRegister = (event) => {
     event.preventDefault();
     const username = event.target.username.value;
@@ -136,8 +145,8 @@ function App() {
       alert("Użytkownik o tej nazwie już istnieje!");
       return;
     }
-
-    const newUser = { username, email, password };
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const newUser = { username, email, password: hashedPassword };
 
     // Wysyłanie nowego użytkownika do JSON Server
     fetch("http://localhost:5000/users", {
@@ -160,8 +169,8 @@ function App() {
   const glowny_content = (
     <>
       <div className="container mt-4">
-        <h1>Profesjonalne Serwisowanie Auta</h1>
-        <p>Zapewniamy kompleksową obsługę Twojego pojazdu w Radomiu.</p>
+        <h1>Twoje auto w najlepszych rękach</h1>
+        <h3>Zarządzaj serwisem swojego pojazdu online!</h3>
         <a
           href="#"
           onClick={() => setContent("oferta")}
@@ -171,15 +180,14 @@ function App() {
         </a>
 
         <div className="container mt-5">
-          <h2 className="text-center">Nasze Usługi</h2>
+          <h2 className="text-center">Jak to działa?</h2>
           <div className="row" id="services">
             <div className="col-md-4">
               <div className="card">
                 <div className="card-body">
-                  <h5 className="card-title">Przeglądy Techniczne</h5>
+                  <h5 className="card-title">Zarejestruj się</h5>
                   <p className="card-text">
-                    Zadbaj o bezpieczeństwo swojego pojazdu. Oferujemy przeglądy
-                    techniczne.
+                    Utwórz darmowe konto w kilka minut.
                   </p>
                 </div>
               </div>
@@ -187,10 +195,9 @@ function App() {
             <div className="col-md-4">
               <div className="card">
                 <div className="card-body">
-                  <h5 className="card-title">Naprawy Mechaniczne</h5>
+                  <h5 className="card-title">Dodaj swój samochód</h5>
                   <p className="card-text">
-                    Nasza ekipa specjalistów zajmie się każdą naprawą
-                    mechaniczną.
+                    Podaj podstawowe dane o swoim pojeździe.
                   </p>
                 </div>
               </div>
@@ -198,9 +205,10 @@ function App() {
             <div className="col-md-4">
               <div className="card">
                 <div className="card-body">
-                  <h5 className="card-title">Serwis Klimatyzacji</h5>
+                  <h5 className="card-title">Zarządzaj serwisem</h5>
                   <p className="card-text">
-                    Zapewniamy pełen serwis klimatyzacji w Twoim aucie.
+                    Zapisuj historię napraw i przeglądów, a my przypomnimy Ci o
+                    nadchodzących terminach.
                   </p>
                 </div>
               </div>
@@ -294,9 +302,9 @@ function App() {
         <h2>Status Twojego Auta</h2>
         {vehicles.filter((vehicle) => vehicle.userId === loggedInUser.id)
           .length === 0 ? (
-          <p>
+          <h3>
             Brak pojazdów. Kliknij przycisk poniżej, aby dodać pierwszy pojazd.
-          </p>
+          </h3>
         ) : (
           <ul className="list-group">
             {vehicles
@@ -376,24 +384,29 @@ function App() {
     <>
       <div className="container mt-4">
         <h2>Nasza Oferta Serwisowa</h2>
-        <h3>Pakiety Serwisowe</h3>
+
         <ul className="list-group">
           <li className="list-group-item">
-            <h4>Pakiet Podstawowy</h4>
-            <p>Wymiana oleju oraz filtru oleju. Cena: 100 zł.</p>
-          </li>
-          <li className="list-group-item">
-            <h4>Pakiet Komfortowy</h4>
+            <h4>Twoja osobista karta serwisowa online</h4>
             <p>
-              Wymiana oleju, filtru oleju oraz kontrola stanu technicznego.
-              Cena: 300 zł.
+              Zapomnij o zgubionych fakturach i notatkach. Nasza platforma
+              pozwala zapisywać wszystkie dane o Twoim samochodzie – historię
+              napraw, przeglądów i serwisów – w jednym miejscu.
             </p>
           </li>
           <li className="list-group-item">
-            <h4>Pakiet Premium</h4>
+            <h4>Przypomnienia o ważnych terminach</h4>
             <p>
-              Wszystko w Pakiecie Komfortowym + wymiana klocków hamulcowych.
-              Cena: 500 zł.
+              Już nigdy nie zapomnisz o przeglądzie technicznym czy wymianie
+              oleju. Dzięki naszym powiadomieniom zawsze będziesz na bieżąco.
+            </p>
+          </li>
+          <li className="list-group-item">
+            <h4>Prosta obsługa i intuicyjny interfejs</h4>
+            <p>
+              Zarządzanie serwisem auta jeszcze nigdy nie było tak łatwe. Dodaj
+              swój samochód, zapisuj informacje o naprawach i miej wszystko pod
+              ręką, gdziekolwiek jesteś.
             </p>
           </li>
         </ul>
@@ -556,10 +569,25 @@ function App() {
           </li>
         </ul>
         <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
-            {loggedInUser ? (
-              <span className="nav-link">Witaj, {loggedInUser.username}</span>
-            ) : (
+          {loggedInUser ? (
+            <>
+              <li className="nav-item">
+                <span className="nav-link">Witaj, {loggedInUser.username}</span>
+              </li>
+              <li className="nav-item">
+                <button
+                  className="btn btn-outline-danger nav-link"
+                  onClick={() => {
+                    handleLogout();
+                    setContent("glowny");
+                  }}
+                >
+                  Wyloguj
+                </button>
+              </li>
+            </>
+          ) : (
+            <li className="nav-item">
               <a
                 className="nav-link btn btn-primary text-white"
                 href="#"
@@ -567,8 +595,8 @@ function App() {
               >
                 Logowanie
               </a>
-            )}
-          </li>
+            </li>
+          )}
         </ul>
       </div>
     </nav>
