@@ -11,6 +11,12 @@
       "username": "user1",
       "email": "user1@gmail.com",
       "password": "$2a$10$UtBx66lJb75QwAls8cUEA.C/SFFYcMQwMZcXkUdlMpMiYy5s6WQH6"
+    },
+    {
+      "id": "eabc",
+      "username": "mati",
+      "email": "mati@gmail.com",
+      "password": "$2a$10$ixnuS5Pl3yrvmb1V/849ZuVdar62TtmzjtY/bsfj9ZPE7bj2uI3OC"
     }
   ],
   "vehicles": [
@@ -22,6 +28,14 @@
       "vin": "KNAE55LC3J6010494",
       "lastInspectionDate": "2020-12-12",
       "inspectionExpiryDate": "2025-12-12"
+    },
+    {
+      "id": "7236",
+      "type": "Samochód osobowy",
+      "registrationNumber": "ZST2137",
+      "vin": "KNAE55LC3J6010494",
+      "lastInspectionDate": "2020-12-12",
+      "inspectionExpiryDate": "2021-12-12"
     }
   ],
   "repairs": [
@@ -31,6 +45,13 @@
       "title": "Wymiana oleju",
       "date": "2009-11-12",
       "description": "Standardowa wymiana oleju"
+    },
+    {
+      "id": "2750",
+      "vehicleId": "7236",
+      "title": "Wymiana klocków",
+      "date": "2020-12-12",
+      "description": "standardowa wymiana klocków"
     }
   ]
 }

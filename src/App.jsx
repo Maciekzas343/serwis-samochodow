@@ -10,7 +10,7 @@ function App() {
 
   // Pobieranie użytkowników z API
   useEffect(() => {
-    fetch("http://localhost:5000/users")
+    fetch("https://car-service-ehw3.onrender.com/users")
       .then((response) => response.json())
       .then((data) => setUsers(data))
       .catch((error) => console.error("Błąd pobierania użytkowników:", error));
@@ -19,7 +19,9 @@ function App() {
   // Pobieranie pojazdów dla zalogowanego użytkownika
   useEffect(() => {
     if (loggedInUser) {
-      fetch(`http://localhost:5000/vehicles?userId=${loggedInUser.id}`)
+      fetch(
+        `https://car-service-ehw3.onrender.com/vehicles?userId=${loggedInUser.id}`
+      )
         .then((response) => response.json())
         .then((data) => setVehicles(data))
         .catch((error) => console.error("Błąd pobierania pojazdów:", error));
@@ -28,7 +30,7 @@ function App() {
 
   // Pobieranie historii napraw
   useEffect(() => {
-    fetch("http://localhost:5000/repairs")
+    fetch("https://car-service-ehw3.onrender.com/repairs")
       .then((response) => response.json())
       .then((data) => setRepairs(data))
       .catch((error) => console.error("Błąd pobierania napraw:", error));
@@ -69,7 +71,7 @@ function App() {
       description,
     };
 
-    fetch("http://localhost:5000/repairs", {
+    fetch("https://car-service-ehw3.onrender.com/repairs", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,7 +109,7 @@ function App() {
       inspectionExpiryDate,
     };
 
-    fetch("http://localhost:5000/vehicles", {
+    fetch("https://car-service-ehw3.onrender.com/vehicles", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -149,7 +151,7 @@ function App() {
     const newUser = { username, email, password: hashedPassword };
 
     // Wysyłanie nowego użytkownika do JSON Server
-    fetch("http://localhost:5000/users", {
+    fetch("https://car-service-ehw3.onrender.com/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
